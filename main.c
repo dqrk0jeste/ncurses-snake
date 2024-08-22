@@ -8,8 +8,6 @@
 
 #define TICK 100000
 
-#define MAX_TAIL_LENGTH 256
-
 #define WHITE_BLOCK 1
 #define GREEN_BLOCK 2
 #define RED_BLOCK 3
@@ -24,9 +22,7 @@ enum DIRECTION {
   DOWN,
   RIGHT,
   LEFT
-};
-
-enum DIRECTION direction;
+} direction;
 
 bool game_running = false;
 
@@ -66,20 +62,6 @@ void draw_borders() {
     draw_tile(i, screen_width - 1, ' ' | COLOR_PAIR(WHITE_BLOCK));
   }
 }
-
-/*void handle_resize(int sig) {*/
-/*  endwin();*/
-/*  refresh();*/
-/*  clear();*/
-/**/
-/*  screen_height = getmaxy(stdscr) / TILE_HEIGHT;*/
-/*  screen_width = getmaxx(stdscr) / TILE_WIDTH;*/
-/**/
-/*  draw_borders();*/
-/**/
-/*  game_running = false;*/
-/*  refresh();*/
-/*}*/
 
 void init_snake() {
   head_y = screen_height / 2;
@@ -130,7 +112,7 @@ bool check_if_hit_wall() {
 
 void handle_game_input(int c) {
   switch (c) {
-    case 'q':
+    case 'r':
       game_running = false;
       break;
     case KEY_UP:
@@ -288,7 +270,6 @@ int main() {
   keypad(stdscr, true);
   noecho();
   curs_set(false);
-  /*signal(SIGINT, handle_interupt);*/
 
   start_color();
   use_default_colors();
@@ -302,11 +283,10 @@ int main() {
   init_pair(GREEN_BLOCK, COLOR_GREEN, COLOR_GREEN);
   init_pair(RED_BLOCK, COLOR_RED, COLOR_RED);
 
+  screen_height = getmaxy(stdscr) / TILE_HEIGHT;
+  screen_width = getmaxx(stdscr) / TILE_WIDTH;
 
   while(true) {
-    screen_height = getmaxy(stdscr) / TILE_HEIGHT;
-    screen_width = getmaxx(stdscr) / TILE_WIDTH;
-
     clear();
     nodelay(stdscr, false);
 
