@@ -1,5 +1,6 @@
 #include <signal.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <time.h>
 #include <stdlib.h>
@@ -11,6 +12,7 @@
 #define WHITE_BLOCK 1
 #define GREEN_BLOCK 2
 #define RED_BLOCK 3
+#define BLACK_ON_WHITE 4
 
 #define TILE_WIDTH 2
 #define TILE_HEIGHT 1
@@ -25,6 +27,7 @@ enum DIRECTION {
 } direction;
 
 bool game_running = false;
+int score = 0;
 
 int head_y, head_x;
 
@@ -262,6 +265,15 @@ bool check_if_eaten_food() {
   return head_x == food_x && head_y == food_y;
 }
 
+void update_score() {
+  char s[256];
+  sprintf(s, "Score: %d", score);
+  move(0, TILE_WIDTH);
+  for(char *p = s; *p != 0; p++) {
+    addch(*p | COLOR_PAIR(BLACK_ON_WHITE));
+  }
+}
+
 int main() {
   srand(time(NULL));
 
@@ -282,6 +294,7 @@ int main() {
   init_pair(WHITE_BLOCK, COLOR_WHITE, COLOR_WHITE);
   init_pair(GREEN_BLOCK, COLOR_GREEN, COLOR_GREEN);
   init_pair(RED_BLOCK, COLOR_RED, COLOR_RED);
+  init_pair(BLACK_ON_WHITE, COLOR_BLACK, COLOR_WHITE);
 
   screen_height = getmaxy(stdscr) / TILE_HEIGHT;
   screen_width = getmaxx(stdscr) / TILE_WIDTH;
@@ -299,6 +312,7 @@ int main() {
     has_eaten_food = false;
 
     draw_borders();
+    update_score();
     init_snake();
     generate_food();
 
@@ -336,6 +350,8 @@ int main() {
     }
 
     game_running = true;
+    score = 0;
+    update_score();
     nodelay(stdscr, true);
 
     while(game_running) {
@@ -349,6 +365,8 @@ int main() {
       }
       if(check_if_eaten_food()) {
         has_eaten_food = true;
+        score++;
+        update_score();
         generate_food();
       }
       refresh();
