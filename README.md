@@ -1,5 +1,7 @@
 # play snake in your terminal
 
+![preview image](preview.png "snake")
+
 ## dependencies 
 - gcc
 - ncurses library
