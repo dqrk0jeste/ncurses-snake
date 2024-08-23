@@ -274,7 +274,7 @@ void update_score() {
   }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   srand(time(NULL));
 
   initscr();
@@ -298,6 +298,27 @@ int main() {
 
   screen_height = getmaxy(stdscr) / TILE_HEIGHT;
   screen_width = getmaxx(stdscr) / TILE_WIDTH;
+
+  int wanted_height = -1, wanted_width = -1, opt;
+
+  while ((opt = getopt(argc, argv, "h:w:")) != -1) {
+    switch (opt) {
+      case 'h':
+        wanted_height = atoi(optarg);
+        break;
+      case 'w':
+        wanted_width = atoi(optarg);
+        break;
+    }
+  }
+
+  if(wanted_width >= 5 && wanted_width < screen_width) {
+    screen_width = wanted_width;
+  }
+
+  if(wanted_height >= 5 && wanted_height < screen_height) {
+    screen_height = wanted_height;
+  }
 
   while(true) {
     clear();
@@ -357,6 +378,10 @@ int main() {
     while(game_running) {
       c = getch();
       if (c != -1) {
+        if(c == 'q') {
+          endwin();
+          return 0;
+        }
         handle_game_input(c);
       }
       move_snake();
